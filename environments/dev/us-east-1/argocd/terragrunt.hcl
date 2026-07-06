@@ -51,6 +51,6 @@ generate "k8s_helm_provider" {
 inputs = {
   cluster_name           = dependency.eks.outputs.cluster_id
   gitops_repo_url        = "https://github.com/lamasalah32/eks-infrastructure-platform.git"
-  gitops_repo_path       = "environments/dev"
+  gitops_repo_path       = "manifests"
   gitops_target_revision = "main"
 }
