@@ -1,0 +1,45 @@
+version: 3
+automerge: false
+
+projects:
+  - name: dev-vpc
+    dir: environments/dev/us-east-1/vpc
+    workflow: terragrunt
+    autoplan:
+      when_modified: ["*.hcl", "../../../../root.hcl", "../../../../modules/vpc/**/*.tf"]
+
+  - name: dev-eks
+    dir: environments/dev/us-east-1/eks
+    workflow: terragrunt
+    autoplan:
+      when_modified: ["*.hcl", "../../../../root.hcl", "../../../../modules/eks/**/*.tf"]
+
+  - name: dev-argocd
+    dir: environments/dev/us-east-1/argocd
+    workflow: terragrunt
+    autoplan:
+      when_modified: ["*.hcl", "../../../../root.hcl", "../../../../modules/argocd/**/*.tf"]
+
+  - name: dev-atlantis
+    dir: environments/dev/us-east-1/atlantis
+    workflow: terragrunt
+    autoplan:
+      when_modified: ["*.hcl", "../../../../root.hcl", "../../../../modules/atlantis/**/*.tf"]
+
+  - name: prod-vpc
+    dir: environments/prod/us-east-1/vpc
+    workflow: terragrunt
+    autoplan:
+      when_modified: ["*.hcl", "../../../../root.hcl", "../../../../modules/vpc/**/*.tf"]
+
+  - name: prod-eks
+    dir: environments/prod/us-east-1/eks
+    workflow: terragrunt
+    autoplan:
+      when_modified: ["*.hcl", "../../../../root.hcl", "../../../../modules/eks/**/*.tf"]
+
+  - name: prod-argocd
+    dir: environments/prod/us-east-1/argocd
+    workflow: terragrunt
+    autoplan:
+      when_modified: ["*.hcl", "../../../../root.hcl", "../../../../modules/argocd/**/*.tf"]
