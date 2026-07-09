@@ -99,6 +99,13 @@ resource "helm_release" "atlantis" {
 
       resources = var.resources
 
+      volumeClaim = {
+        enabled          = true
+        dataStorage      = "5Gi"
+        storageClassName = "gp2"
+        accessModes      = ["ReadWriteOnce"]
+      }
+
       initContainers = [
         {
           name  = "install-terragrunt"

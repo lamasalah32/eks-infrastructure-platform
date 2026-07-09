@@ -32,3 +32,9 @@ variable "tags" {
   description = "Resource tags"
   type        = map(string)
 }
+
+variable "cluster_name" {
+  description = "Name of the EKS cluster that will run in this VPC. Used to tag subnets for AWS Load Balancer Controller auto-discovery (kubernetes.io/role/elb, kubernetes.io/role/internal-elb, kubernetes.io/cluster/<name>). Leave null to skip these tags."
+  type        = string
+  default     = null
+}

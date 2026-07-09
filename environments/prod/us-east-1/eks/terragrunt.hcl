@@ -18,12 +18,12 @@ dependency "vpc" {
 }
 
 inputs = {
-  cluster_name       = "eks-prod"
-  environment        = "prod"
-  desired_size       = 3
-  max_size           = 5
-  min_size           = 3
-  instance_types     = ["t3.large"]
+  cluster_name   = "eks-prod"
+  environment    = "prod"
+  desired_size   = 3
+  max_size       = 5
+  min_size       = 3
+  instance_types = ["t3.large"]
 
   vpc_id             = dependency.vpc.outputs.vpc_id
   cluster_subnet_ids = dependency.vpc.outputs.private_subnet_id

@@ -20,11 +20,23 @@ projects:
     autoplan:
       when_modified: ["*.hcl", "../../../../root.hcl", "../../../../modules/argocd/**/*.tf"]
 
+  - name: dev-lb-controller
+    dir: environments/dev/us-east-1/lb-controller
+    workflow: terragrunt
+    autoplan:
+      when_modified: ["*.hcl", "../../../../root.hcl", "../../../../modules/lb-controller/**/*.tf"]
+
   - name: dev-atlantis
     dir: environments/dev/us-east-1/atlantis
     workflow: terragrunt
     autoplan:
       when_modified: ["*.hcl", "../../../../root.hcl", "../../../../modules/atlantis/**/*.tf"]
+
+  - name: prod-lb-controller
+    dir: environments/prod/us-east-1/lb-controller
+    workflow: terragrunt
+    autoplan:
+      when_modified: ["*.hcl", "../../../../root.hcl", "../../../../modules/lb-controller/**/*.tf"]
 
   - name: prod-vpc
     dir: environments/prod/us-east-1/vpc

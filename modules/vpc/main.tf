@@ -1,5 +1,5 @@
 resource "aws_vpc" "this" {
-  cidr_block  = var.cidr
+  cidr_block = var.cidr
 
   tags = merge(
     {
@@ -52,9 +52,13 @@ resource "aws_subnet" "public" {
   availability_zone       = var.azs[count.index]
   map_public_ip_on_launch = true
 
-  tags = {
-    Name = "public-subnet-${count.index}"
-  }
+  tags = merge(
+    {
+      Name                     = "public-subnet-${count.index}"
+      "kubernetes.io/role/elb" = "1"
+    },
+    var.cluster_name == null ? {} : { "kubernetes.io/cluster/${var.cluster_name}" = "shared" },
+  )
 }
 
 resource "aws_route_table" "public" {
@@ -62,9 +66,9 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route_table_association" "public" {
-  count           = aws_route_table.public == null ? 0 : length(aws_subnet.public)
-  subnet_id       = aws_subnet.public[count.index].id
-  route_table_id  = aws_route_table.public.id
+  count          = aws_route_table.public == null ? 0 : length(aws_subnet.public)
+  subnet_id      = aws_subnet.public[count.index].id
+  route_table_id = aws_route_table.public.id
 }
 
 resource "aws_route" "internet" {
@@ -72,7 +76,7 @@ resource "aws_route" "internet" {
   gateway_id             = aws_internet_gateway.igw.id
   destination_cidr_block = "0.0.0.0/0"
 
-   timeouts {
+  timeouts {
     create = "5m"
   }
 }
@@ -80,14 +84,18 @@ resource "aws_route" "internet" {
 
 /*  Private subnets   */
 resource "aws_subnet" "private" {
-  vpc_id                  = aws_vpc.this.id
-  count                   = var.private_subnets == null ? 0 : length(var.private_subnets)
-  cidr_block              = var.private_subnets[count.index]
-  availability_zone       = var.azs[count.index]
+  vpc_id            = aws_vpc.this.id
+  count             = var.private_subnets == null ? 0 : length(var.private_subnets)
+  cidr_block        = var.private_subnets[count.index]
+  availability_zone = var.azs[count.index]
 
-  tags = {
-    Name = "private-subnet-${count.index}"
-  }
+  tags = merge(
+    {
+      Name                              = "private-subnet-${count.index}"
+      "kubernetes.io/role/internal-elb" = "1"
+    },
+    var.cluster_name == null ? {} : { "kubernetes.io/cluster/${var.cluster_name}" = "shared" },
+  )
 }
 
 resource "aws_route_table" "private" {
@@ -95,9 +103,9 @@ resource "aws_route_table" "private" {
 }
 
 resource "aws_route_table_association" "private" {
-  count           = aws_route_table.private == null ? 0 : length(aws_subnet.private)
-  subnet_id       = aws_subnet.private[count.index].id
-  route_table_id  = aws_route_table.private.id
+  count          = aws_route_table.private == null ? 0 : length(aws_subnet.private)
+  subnet_id      = aws_subnet.private[count.index].id
+  route_table_id = aws_route_table.private.id
 }
 
 resource "aws_route" "private_nat_gateway" {

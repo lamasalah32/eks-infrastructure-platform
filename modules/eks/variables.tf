@@ -34,6 +34,12 @@ variable "enable_irsa" {
   default     = true
 }
 
+variable "enable_ebs_csi_driver" {
+  description = "Install the aws-ebs-csi-driver EKS addon (via IRSA), needed for any workload with a PersistentVolumeClaim backed by the gp2/gp3 EBS storage classes"
+  type        = bool
+  default     = true
+}
+
 variable "kubernetes_version" {
   description = "Kubernetes version for the EKS cluster/node group. Leave null to let AWS assign its current default version (recommended — avoids pinning to a version that ages out of Auto Mode/other feature support)."
   type        = string

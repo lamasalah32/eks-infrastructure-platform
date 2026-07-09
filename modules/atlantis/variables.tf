@@ -78,18 +78,18 @@ variable "service_type" {
 }
 
 variable "service_annotations" {
-  description = "Annotations applied to the atlantis-server Service, e.g. to request an AWS NLB instead of the default classic ELB"
+  description = "Annotations applied to the atlantis-server Service, provisioning an internet-facing NLB via the AWS Load Balancer Controller (modules/lb-controller must be applied first, or this Service stays pending)"
   type        = map(string)
   default = {
-    "service.beta.kubernetes.io/aws-load-balancer-type"   = "nlb"
-    "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internet-facing"
+    "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
+    "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "ip"
+    "service.beta.kubernetes.io/aws-load-balancer-scheme"          = "internet-facing"
   }
 }
 
 variable "iam_policy_arns" {
   description = "IAM policy ARNs attached to Atlantis's pod role (IRSA), granting it permission to apply the Terraform/Terragrunt changes it plans. Defaults to AdministratorAccess for simplicity in this learning/portfolio project — scope this down to least-privilege for real production use."
   type        = list(string)
-  default     = {}
 }
 
 variable "resources" {

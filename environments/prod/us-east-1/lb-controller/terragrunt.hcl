@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "../../../../modules/atlantis"
+  source = "../../../../modules/lb-controller"
 }
 
 dependency "eks" {
@@ -15,6 +15,15 @@ dependency "eks" {
     cluster_certificate_authority_data = "bW9jay1jYQ=="
     cluster_oidc_issuer_url            = "https://oidc.eks.us-east-1.amazonaws.com/id/MOCKMOCKMOCKMOCKMOCKMOCKMOCKMOCK"
     oidc_provider_arn                  = "arn:aws:iam::000000000000:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/MOCKMOCKMOCKMOCKMOCKMOCKMOCKMOCK"
+  }
+  mock_outputs_allowed_terraform_commands = ["plan", "validate", "init", "destroy"]
+}
+
+dependency "vpc" {
+  config_path = "../vpc"
+
+  mock_outputs = {
+    vpc_id = "vpc-00000000000000000"
   }
   mock_outputs_allowed_terraform_commands = ["plan", "validate", "init", "destroy"]
 }
@@ -52,15 +61,8 @@ generate "k8s_helm_provider" {
 
 inputs = {
   cluster_name      = dependency.eks.outputs.cluster_id
+  vpc_id            = dependency.vpc.outputs.vpc_id
+  aws_region        = "us-east-1"
   oidc_provider_arn = dependency.eks.outputs.oidc_provider_arn
   oidc_provider_url = dependency.eks.outputs.cluster_oidc_issuer_url
-
-  iam_policy_arns = [
-    "arn:aws:iam::aws:policy/AdministratorAccess"
-  ]
-
-  vcs_provider_user  = "lamasalah32"
-  vcs_provider_token = get_env("TG_atlantis_vcs_token", "")
-  vcs_webhook_secret = get_env("TG_atlantis_vcs_webhook_secret", "")
-  repo_allowlist     = "github.com/lamasalah32/eks-infrastructure-platform"
 }
